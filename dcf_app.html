@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Расчет NPV и IRR</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mathjs@11.7.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Yandex.Metrika counter -->
+    <script type="text/javascript" >
+        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+        m[i].l=1*new Date();
+        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+    
+        ym(99633293, "init", {
+            clickmap:true,
+            trackLinks:true,
+            accurateTrackBounce:true,
+            webvisor:true
+        });
+    </script>
+    <noscript><div><img src="https://mc.yandex.ru/watch/99633293" style="position:absolute; left:-9999px;" alt="" /></div></noscript>
+    <!-- /Yandex.Metrika counter -->
+    <!-- Top.Mail.Ru counter -->
+    <script type="text/javascript">
+        var _tmr = window._tmr || (window._tmr = []);
+        _tmr.push({id: "3330106", type: "pageView", start: (new Date()).getTime(), pid: "708469940"});
+        (function (d, w, id) {
+        if (d.getElementById(id)) return;
+        var ts = d.createElement("script"); ts.type = "text/javascript"; ts.async = true; ts.id = id;
+        ts.src = "https://top-fwz1.mail.ru/js/code.js";
+        var f = function () {var s = d.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ts, s);};
+        if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); }
+        })(document, window, "tmr-code");
+    </script>
+    <noscript><div><img src="https://top-fwz1.mail.ru/counter?id=3330106;js=na" style="position:absolute;left:-9999px;" alt="Top.Mail.Ru" /></div></noscript>
+    <!-- /Top.Mail.Ru counter -->
+        <!-- Top100 (Kraken) Counter -->
+    <script>
+
+        (function (w, d, c) {
+        (w[c] = w[c] || []).push(function() {
+            var options = {
+                project: 7735956,
+            };
+            try {
+                w.top100Counter = new top100(options);
+            } catch(e) { }
+        });
+        var n = d.getElementsByTagName("script")[0],
+        s = d.createElement("script"),
+        f = function () { n.parentNode.insertBefore(s, n); };
+        s.type = "text/javascript";
+        s.async = true;
+        s.src =
+        (d.location.protocol == "https:" ? "https:" : "http:") +
+        "//st.top100.ru/top100/top100.js";
+        if (w.opera == "[object Opera]") {
+        d.addEventListener("DOMContentLoaded", f, false);
+    } else { f(); }
+    })(window, document, "_top100q");
+    </script>
+
+    <noscript>
+    <img src="//counter.rambler.ru/top100.cnt?pid=7735956" alt="Топ-100" />
+    </noscript>
+    <!-- END Top100 (Kraken) Counter --> 
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+            flex: 1;
+        }
+        .input-panel, .table-panel, .charts-panel {
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+        .input-panel {
+            width: 250px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+        }
+        .input-panel h1, .input-panel h2, .input-panel label {
+            color: #ecf0f1;
+        }
+        .input-panel input[type="number"] {
+            background-color: #34495e;
+            border: 1px solid #2c3e50;
+            color: #ecf0f1;
+        }
+        .table-panel {
+            background-color: #fff;
+            width: 70%; /* Ширина 70% */
+        }
+        .charts-panel {
+            background-color: #fff;
+        }
+        .charts-panel {
+            width: 100%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            table-layout: fixed;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #f8f8f8;
+            font-weight: bold;
+            font-size: 14px; /* Увеличенный размер шрифта для заголовков */
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border-radius: 4px;
+        }
+        h1, h2 {
+            margin-top: 0;
+            color: #333;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .input-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .input-row label {
+            width: 120px;
+            margin-right: 10px;
+        }
+        .input-row input {
+            flex: 1;
+        }
+        .chart-container {
+            margin-top: 20px;
+            width: 100%;
+            max-width: 800px;
+            height: 400px; /* Увеличена высота диаграмм */
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                flex-direction: row;
+            }
+            .table-panel {
+                flex: 1;
+            }
+            .charts-panel {
+                width: 600px;
+            }
+        }
+
+        @media (max-width: 767px) {
+            h1 {
+                font-size: 20px;
+            }
+            h2 {
+                font-size: 18px;
+            }
+            th {
+                font-size: 14px; /* Уменьшенный размер шрифта для мобильных устройств */
+            }
+            td {
+                font-size: 12px;
+            }
+            .input-panel, .table-panel, .charts-panel {
+                padding: 15px;
+            }
+            .input-row label {
+                width: 80px;
+            }
+        }
+
+        /* Стили для футера */
+        footer {
+            background-color: #2c3e50; /* Темный фон */
+            color: #ecf0f1; /* Светлый текст */
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        footer .footer-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        footer p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <h1>Приложение для расчета NPV и IRR денежного потока</h1>
+        <div class="container">
+            
+            <!-- Левая колонка: Ввод данных -->
+            <div class="input-panel">
+                <h1>Ввод данных</h1>
+
+                <!-- Поле для ввода количества лет -->
+                <label for="years">Введите количество лет прогноза:</label>
+                <input type="number" id="years" v-model.number="years" min="1" @input="updateCashFlows">
+
+                <label for="discountRate">Внесите ставку дисконтирования (%):</label>
+                <input type="number" id="discountRate" v-model="discountRate" step="0.01">
+                
+                <h2>Внесите денежные потоки за каждый год прогнозного периода:</h2>
+                <div v-for="(cashFlow, index) in cashFlows" :key="index" class="input-row">
+                    <label :for="'cashFlow' + index">Год {{ index + 1 }}:</label>
+                    <input type="number" :id="'cashFlow' + index" v-model="cashFlows[index]" step="0.01">
+                </div>
+            </div>
+
+            <!-- Центральная колонка: Таблица денежных потоков -->
+            <div class="table-panel">
+                <h1>Денежные потоки</h1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Год</th>
+                            <th>Денежный поток</th>
+                            <th>Дисконт. ден.поток</th>
+                            <th>Накопит. итог ден.поток</th>
+                            <th>Накопит. итог дисконт. ден.поток</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(cashFlow, index) in cashFlows" :key="index">
+                            <td>{{ index + 1 }}</td>
+                            <td>{{ cashFlow }}</td>
+                            <td>{{ calculateDCF(cashFlow, index + 1) }}</td>
+                            <td>{{ cumulativeCashFlows[index].value }}</td>
+                            <td>{{ cumulativeDCF[index].value }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <h2>Суммарный дисконтированный денежный поток (NPV): {{ totalDCF }}</h2>
+                <h2>Внутренняя норма доходности (IRR): {{ irr }}%</h2>
+            </div>
+
+            <!-- Правая колонка: Диаграммы -->
+            <div class="charts-panel">
+                <h1>Диаграммы</h1>
+
+                <!-- График накопительного денежного потока -->
+                <div class="chart">
+                    <h2>Накопительный денежный поток:</h2>
+                    <div class="chart-container">
+                        <canvas id="cumulativeCashFlowChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- График накопительного дисконтированного денежного потока -->
+                <div class="chart">
+                    <h2>Накопительный дисконтированный денежный поток:</h2>
+                    <div class="chart-container">
+                        <canvas id="cumulativeDCFChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Футер -->
+    <footer>
+        <div class="footer-content">
+            <p>&copy; 2025. Разработано и реализовано: <strong><span>Смоленышев Олег Вячеславович. ИНН 771800842058. ОГРН 323774600351922</span></strong>. All Rights Reserved. Бета - версия (0.9.1) от 2025-01-23</p>
+            <p> <a href="https://otter-finance.ru" target="_blank">https://otter-finance.ru</a></p>
+            <p>email: <a href="mailto:smolenishev@otter-finance.ru">smolenishev@otter-finance.ru</a></p>
+            <p>+7 916 014 37 70</p>            
+        </div>
+    </footer>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                years: 11,
+                discountRate: 15,
+                cashFlows: [],
+                cumulativeCashFlowChart: null,
+                cumulativeDCFChart: null
+            },
+            created() {
+                this.updateCashFlows();
+            },
+            computed: {
+                totalDCF() {
+                    return this.cashFlows.reduce((total, cashFlow, index) => {
+                        return total + parseFloat(this.calculateDCF(cashFlow, index + 1));
+                    }, 0).toFixed(2);
+                },
+                cumulativeCashFlows() {
+                    let cumulative = 0;
+                    return this.cashFlows.map((cashFlow, index) => {
+                        cumulative += parseFloat(cashFlow);
+                        return { year: index + 1, value: cumulative.toFixed(2) };
+                    });
+                },
+                cumulativeDCF() {
+                    let cumulative = 0;
+                    return this.cashFlows.map((cashFlow, index) => {
+                        cumulative += parseFloat(this.calculateDCF(cashFlow, index + 1));
+                        return { year: index + 1, value: cumulative.toFixed(2) };
+                    });
+                },
+                irr() {
+                    return this.calculateIRRNewton(this.cashFlows).toFixed(2);
+                }
+            },
+            methods: {
+                calculateDCF(cashFlow, year) {
+                    if (!cashFlow || isNaN(cashFlow)) return 0;
+                    const discountFactor = Math.pow(1 + this.discountRate / 100, -year);
+                    return (cashFlow * discountFactor).toFixed(2);
+                },
+                updateCashFlows() {
+                    this.cashFlows = new Array(this.years).fill(0);
+                    if (this.years >= 1) {
+                        this.cashFlows[0] = -1000;
+                    }
+                    for (let i = 1; i < this.years; i++) {
+                        this.cashFlows[i] = 400;
+                    }
+                },
+                updateCharts() {
+                    this.renderChart(
+                        'cumulativeCashFlowChart',
+                        this.cumulativeCashFlows.map(d => d.value),
+                        'blue'
+                    );
+                    this.renderChart(
+                        'cumulativeDCFChart',
+                        this.cumulativeDCF.map(d => d.value),
+                        'red'
+                    );
+                },
+                renderChart(canvasId, data, color) {
+                    const ctx = document.getElementById(canvasId).getContext('2d');
+
+                    // Удаляем старый график, если он существует
+                    if (this[canvasId + 'Instance']) {
+                        this[canvasId + 'Instance'].destroy();
+                    }
+
+                    this[canvasId + 'Instance'] = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: Array.from({ length: this.years }, (_, i) => `Год ${i + 1}`),
+                            datasets: [{
+                                data: data,
+                                borderColor: color,
+                                backgroundColor: 'rgba(0, 123, 255, 0.2)', // Новый цвет заливки
+                                borderWidth: 2,
+                                fill: true
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    display: false // Убираем легенду
+                                }
+                            },
+                            scales: {
+                                x: {
+                                    display: true, // Восстанавливаем ось X
+                                    ticks: {
+                                        color: '#333', // Цвет подписей оси X
+                                        font: {
+                                            size: 12 // Размер шрифта подписей
+                                        }
+                                    }
+                                },
+                                y: {
+                                    display: true, // Оставляем ось Y видимой
+                                    ticks: {
+                                        color: '#333', // Цвет подписей оси Y
+                                        font: {
+                                            size: 12 // Размер шрифта подписей
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                },
+                calculateIRRNewton(cashFlows, guess = 0.1, tolerance = 0.00001, maxIterations = 100) {
+                    const npv = (rate) => {
+                        return cashFlows.reduce((acc, cf, t) => acc + cf / Math.pow(1 + rate, t), 0);
+                    };
+
+                    const derivative = (rate) => {
+                        return cashFlows.reduce((acc, cf, t) => acc - (cf * t) / Math.pow(1 + rate, t + 1), 0);
+                    };
+
+                    let irr = guess;
+                    let npvValue = npv(irr);
+                    let iterations = 0;
+
+                    while (Math.abs(npvValue) > tolerance && iterations < maxIterations) {
+                        irr = irr - npvValue / derivative(irr);
+                        npvValue = npv(irr);
+                        iterations++;
+                    }
+
+                    return irr * 100;
+                }
+            },
+            watch: {
+                cashFlows: {
+                    handler: 'updateCharts',
+                    deep: true
+                },
+                discountRate: 'updateCharts',
+                years: 'updateCashFlows'
+            },
+            mounted() {
+                this.updateCharts();
+            }
+        });
+    </script>
+</body>
+</html>
