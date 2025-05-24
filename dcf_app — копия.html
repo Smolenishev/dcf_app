@@ -1,17 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <!-- Google tag (gtag.js) 2025-02-04-->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-YDR95MZBRP"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-
-        gtag('config', 'G-YDR95MZBRP');
-    </script>
-    <!--/ Google tag (gtag.js) -->
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Расчет NPV и IRR</title>
@@ -55,16 +44,13 @@
     </script>
     <noscript><div><img src="https://top-fwz1.mail.ru/counter?id=3330106;js=na" style="position:absolute;left:-9999px;" alt="Top.Mail.Ru" /></div></noscript>
     <!-- /Top.Mail.Ru counter -->
-    
-    <!-- Top100 (Kraken) Counter -->
+        <!-- Top100 (Kraken) Counter -->
     <script>
+
         (function (w, d, c) {
         (w[c] = w[c] || []).push(function() {
             var options = {
-                project: 7747217,
-                attributes_dataset: [ "your-attribute" ],
-                trackHashes: true,
-                user_id: null,
+                project: 7735956,
             };
             try {
                 w.top100Counter = new top100(options);
@@ -78,16 +64,16 @@
         s.src =
         (d.location.protocol == "https:" ? "https:" : "http:") +
         "//st.top100.ru/top100/top100.js";
-
         if (w.opera == "[object Opera]") {
         d.addEventListener("DOMContentLoaded", f, false);
     } else { f(); }
     })(window, document, "_top100q");
     </script>
+
     <noscript>
-    <img src="//counter.rambler.ru/top100.cnt?pid=7747217" alt="Топ-100" />
+    <img src="//counter.rambler.ru/top100.cnt?pid=7735956" alt="Топ-100" />
     </noscript>
-    <!-- END Top100 (Kraken) Counter -->
+    <!-- END Top100 (Kraken) Counter --> 
 
     <style>
         body {
@@ -150,7 +136,7 @@
         th {
             background-color: #f8f8f8;
             font-weight: bold;
-            font-size: 12px; /* Увеличенный размер шрифта для заголовков */
+            font-size: 14px; /* Увеличенный размер шрифта для заголовков */
         }
         tr:nth-child(even) {
             background-color: #f9f9f9;
@@ -206,16 +192,16 @@
 
         @media (max-width: 767px) {
             h1 {
-                font-size: 18px;
+                font-size: 20px;
             }
             h2 {
-                font-size: 14px;
+                font-size: 18px;
             }
             th {
-                font-size: 12px; /* Уменьшенный размер шрифта для мобильных устройств */
+                font-size: 14px; /* Уменьшенный размер шрифта для мобильных устройств */
             }
             td {
-                font-size: 10px;
+                font-size: 12px;
             }
             .input-panel, .table-panel, .charts-panel {
                 padding: 15px;
@@ -248,7 +234,7 @@
 </head>
 <body>
     <div id="app">
-        <h1>Приложение для расчета NPV и IRR денежного потока (CF)</h1>
+        <h1>Приложение для расчета NPV и IRR денежного потока</h1>
         <div class="container">
             
             <!-- Левая колонка: Ввод данных -->
@@ -276,10 +262,10 @@
                     <thead>
                         <tr>
                             <th>Год</th>
-                            <th>Ден. поток (CF)</th>
-                            <th>DCF</th>
-                            <th>Накопит. итог CF</th>
-                            <th>Накопит. итог DCF</th>
+                            <th>Денежный поток</th>
+                            <th>Дисконт. ден.поток</th>
+                            <th>Накопит. итог ден.поток</th>
+                            <th>Накопит. итог дисконт. ден.поток</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -292,17 +278,9 @@
                         </tr>
                     </tbody>
                 </table>
-                <br>
+                
                 <h2>Суммарный дисконтированный денежный поток (NPV): {{ totalDCF }}</h2>
                 <h2>Внутренняя норма доходности (IRR): {{ irr }}%</h2>
-                <br>
-                <br>
-                <p>Смотрите более подробное: <a href="calc_app.html" target="_blank"><b>Приложение "Инвестиционный калькулятор"</b></a></p>
-                <p>Данный инструмент позволяет быстро оценить возможности инвестирования, особенно на стадии первоначального планирования. Приложение рассчитывает такие показатели, как кредитная нагрузка, доходность, амортизация активов, а также притоки и оттоки денежных средств по операционным, финансовым и инвестиционным направлениям на протяжении 20 лет. Кроме того, он способен рассчитывать дисконтированные денежные потоки; при этом ставку дисконта пользователь может задать сам. Общее количество входных параметров – 11.</p>
-                <br>                
-                <p>Сайт автора: <a href="https://otter-finance.ru" target="_blank">https://otter-finance.ru</a></p>
-                <p>&copy; 2025. Разработано и реализовано: <strong><span>Олег Смоленышев</span></strong></p>
-                <p><a href="mailto:smolenishev@otter-finance.ru">smolenishev@otter-finance.ru</a></p>
             </div>
 
             <!-- Правая колонка: Диаграммы -->
@@ -331,7 +309,7 @@
     <!-- Футер -->
     <footer>
         <div class="footer-content">
-            <p>&copy; 2025. Разработано и реализовано: <strong><span>Смоленышев Олег Вячеславович. ИНН 771800842058. ОГРН 323774600351922</span></strong>. All Rights Reserved. Бета - версия (0.9.2) от 2025-05-22 <a href="https://github.com/Smolenishev/dcf_app" target="_blank">GiHub</a></p>
+            <p>&copy; 2025. Разработано и реализовано: <strong><span>Смоленышев Олег Вячеславович. ИНН 771800842058. ОГРН 323774600351922</span></strong>. All Rights Reserved. Бета - версия (0.9.1) от 2025-01-23 <a href="https://github.com/Smolenishev/dcf_app" target="_blank">GiHub</a></p>
             <p> <a href="https://otter-finance.ru" target="_blank">https://otter-finance.ru</a></p>
             <p>email: <a href="mailto:smolenishev@otter-finance.ru">smolenishev@otter-finance.ru</a></p><span>+7 916 014 37 70</span>             
         </div>
